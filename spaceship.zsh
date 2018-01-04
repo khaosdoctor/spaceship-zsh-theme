@@ -15,7 +15,7 @@ SPACESHIP_PROMPT_SEPARATE_LINE="${SPACESHIP_PROMPT_SEPARATE_LINE:-true}"
 SPACESHIP_PROMPT_TRUNC="${SPACESHIP_PROMPT_TRUNC:-3}"
 
 # PREFIXES
-SPACESHIP_PREFIX_SHOW="${SPACEHIP_PREFIX_SHOW:-true}"
+SPACESHIP_PREFIX_SHOW="${SPACESHIP_PREFIX_SHOW:-true}"
 SPACESHIP_PREFIX_HOST="${SPACESHIP_PREFIX_HOST:-" at "}"
 SPACESHIP_PREFIX_DIR="${SPACESHIP_PREFIX_DIR:-" in "}"
 SPACESHIP_PREFIX_GIT="${SPACESHIP_PREFIX_GIT:-" on "}"
@@ -42,6 +42,7 @@ SPACESHIP_GIT_UNPUSHED="${SPACESHIP_GIT_UNPUSHED:-⇡}"
 SPACESHIP_TIME_SHOW="${SPACESHIP_TIME_SHOW:-false}"
 SPACESHIP_TIME_FORMAT="${SPACESHIP_TIME_FORMAT:-false}"
 SPACESHIP_TIME_12HR="${SPACESHIP_TIME_12HR:-false}"
+SPACESHIP_TIME_PREFIX="${SPACESHIP_TIME_PREFIX:-''}"
 
 # NVM
 SPACESHIP_NVM_SHOW="${SPACESHIP_NVM_SHOW:-true}"
@@ -49,20 +50,20 @@ SPACESHIP_NVM_SYMBOL="${SPACESHIP_NVM_SYMBOL:-⬢}"
 
 # RUBY
 SPACESHIP_RUBY_SHOW="${SPACESHIP_RUBY_SHOW:-true}"
-SPACESHIP_RUBY_SYMBOL="${SPACESHIP_RUBY_SYMBOL:-💎}"
+SPACESHIP_RUBY_SYMBOL="${SPACESHIP_RUBY_SYMBOL:-}"
 
 # SWIFT
 SPACESHIP_SWIFT_SHOW_LOCAL="${SPACESHIP_SWIFT_SHOW_LOCAL:-true}"
 SPACESHIP_SWIFT_SHOW_GLOBAL="${SPACESHIP_SWIFT_SHOW_GLOBAL:-false}"
-SPACESHIP_SWIFT_SYMBOL="${SPACESHIP_SWIFT_SYMBOL:-🐦}"
+SPACESHIP_SWIFT_SYMBOL="${SPACESHIP_SWIFT_SYMBOL:-}"
 
 # GOLANG
 SPACESHIP_GOLANG_SHOW="${SPACESHIP_GOLANG_SHOW:-true}"
-SPACESHIP_GOLANG_SYMBOL="${SPACESHIP_GOLANG_SYMBOL:-🐹}"
+SPACESHIP_GOLANG_SYMBOL="${SPACESHIP_GOLANG_SYMBOL:-}"
 
 # DOCKER
 SPACESHIP_DOCKER_SHOW="${SPACESHIP_DOCKER_SHOW:-true}"
-SPACESHIP_DOCKER_SYMBOL="${SPACESHIP_DOCKER_SYMBOL:-🐳}"
+SPACESHIP_DOCKER_SYMBOL="${SPACESHIP_DOCKER_SYMBOL:-}"
 
 # XCODE
 SPACESHIP_XCODE_SHOW_LOCAL="${SPACESHIP_XCODE_SHOW_LOCAL:-true}"
@@ -74,7 +75,7 @@ SPACESHIP_VENV_SHOW="${SPACESHIP_VENV_SHOW:-true}"
 
 # PYENV
 SPACESHIP_PYENV_SHOW="${SPACESHIP_PYENV_SHOW:-true}"
-SPACESHIP_PYENV_SYMBOL="${SPACESHIP_PYENV_SYMBOL:-🐍}"
+SPACESHIP_PYENV_SYMBOL="${SPACESHIP_PYENV_SYMBOL:-}"
 
 # VI_MODE
 SPACESHIP_VI_MODE_SHOW="${SPACESHIP_VI_MODE_SHOW:-true}"
@@ -84,7 +85,7 @@ SPACESHIP_VI_MODE_NORMAL="${SPACESHIP_VI_MODE_NORMAL:-[N]}"
 # Time
 spaceship_time() {
   [[ $SPACESHIP_TIME_SHOW == false ]] && return
-
+    echo -n "%{$fg_bold[yellow]%}${SPACESHIP_TIME_PREFIX}"
   if [[ $SPACESHIP_TIME_FORMAT != false ]]; then
     echo -n "%{$fg_bold[yellow]%}${SPACESHIP_TIME_FORMAT}"
   elif [[ $SPACESHIP_TIME_12HR == true ]]; then
@@ -136,6 +137,7 @@ spaceship_host() {
 # Return only three last items of path
 spaceship_current_dir() {
   echo -n "%{$fg_bold[cyan]%}"
+  echo -n "${SPACESHIP_PREFIX_DIR}"
   echo -n "%${SPACESHIP_PROMPT_TRUNC}~";
   echo -n "%{$reset_color%}"
 }
@@ -215,13 +217,13 @@ spaceship_git_status() {
     indicators+="$(spaceship_git_stashed)"
     indicators+="$(spaceship_git_unpushed_unpulled)"
 
-    [ -n "${indicators}" ] && indicators=" [${indicators}]";
+    [ -n "${indicators}" ] && indicators=" ${indicators}";
 
     # Do not show git prefix if prefixes are disabled
     [[ $SPACESHIP_PREFIX_SHOW == true ]] && echo -n "%B${SPACESHIP_PREFIX_GIT}%b" || echo -n ' '
 
     echo -n "%{$fg_bold[magenta]%}"
-    echo -n "$(git_current_branch)"
+    echo -n "[${SPACESHIP_GIT_BRANCH_PREFIX}$(git_current_branch)]"
     echo -n "%{$reset_color%}"
     echo -n "%{$fg_bold[red]%}"
     echo -n "$indicators"
